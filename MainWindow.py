@@ -10,11 +10,6 @@ from OptionsWindow import Ui_OptionsForm
 import requests
 import functools
 
-#TO DO:
-# - Allow different methods to save movie list.
-# - Add TV Series/Anime search too.
-
-
 class UiMainWindow(QMainWindow):
 
     def __init__(self):
