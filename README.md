@@ -1,7 +1,7 @@
 # Entertainment Planner
 Created using PYQT5, QT Designer, and Python. 
 I created this because I had a movie list channel on my discord server with friends, and wanted an easier way to search and keep a list of movies. 
-Therefore, I created this just to that.
+Therefore, I created this just to do that.
 
 ## Images
 ![Main Window](/images/main_window.png)
