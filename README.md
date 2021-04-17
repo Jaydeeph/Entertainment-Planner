@@ -7,7 +7,7 @@ Therefore, I created this just to do that.
 ![Main Window](/images/main_window.png)
 ![Movie Window](/images/movie_window.png)
 
-C# version I created before I found out about PYQT:
+## C# version I created before I found out about PYQT:
 **Link will be provided later**
 
 ## Prerequisites
