@@ -40,7 +40,7 @@ pyuic5 -x .\MainWindow.ui -o .\Converted_MainWindow.py
 ## To Do:
 - [x] Add options window to save personal API key. 
 - [x] Add a Window to see all discord movie list.
-- [ ] Add a list of movies and search movies by that.
+- [x] Add a list of movies and search movies by that.
 - [ ] Add a way to export the discord movie list. 
 - [ ] Add the ability to save the movies into different formats.
 - [ ] Add TV-Series/Anime search options.

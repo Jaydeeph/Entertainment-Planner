@@ -443,8 +443,8 @@ class Ui_MovieWindow(QWidget):
         self.genreLabelLabel.setText(_translate("MovieForm", "Genre:"))
         self.saveMovieButton.setText(_translate("MovieForm", "Save Movie To List"))
                 
-    def setUiMainWindow(self, UiMainWindow):
-        self.uiMainWindow = UiMainWindow
+    def setUiMainWindow(self, ui_main_window):
+        self.ui_main_window = ui_main_window
         
     def setMovie(self, movie):
         self.movie = movie
@@ -476,7 +476,7 @@ class Ui_MovieWindow(QWidget):
 
     def save_movie_to_list(self):
         discord_movie = self.get_discord_version_of_movie(self.movie)
-        self.uiMainWindow.addMovieToList(discord_movie)
+        self.ui_main_window.add_movie_to_list(discord_movie)
     
 
     def copy_discord_version_to_clipboard(self):

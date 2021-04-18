@@ -5,7 +5,9 @@ from PyQt5.QtCore import QSettings
 
 from MovieWindow import Ui_MovieWindow
 from DiscordMovieListWindow import Ui_DiscordMovieListWindow
+from MovieNameListWindow import Ui_MovieNameListForm
 from OptionsWindow import Ui_OptionsForm
+
 
 import requests
 import functools
@@ -17,10 +19,7 @@ class UiMainWindow(QMainWindow):
 
     def setupUi(self, MainWindow):
         self.settings = QSettings('JayInc', 'Entertainment Planner')
-        self.movie_window = None
-        self.movie_window_ui = None
-        self.discord_movie_list_window = None
-        self.discord_movie_list_window_ui = None
+        self.movie_names_list = []
         self.movie_list = []
         
         MainWindow.setObjectName("MainWindow")
@@ -79,12 +78,34 @@ class UiMainWindow(QMainWindow):
         self.movieNamePlainTextEdit.setFont(font)
         self.movieNamePlainTextEdit.setObjectName("movieNamePlainTextEdit")
         
-        self.showMovieButton = QtWidgets.QPushButton(self.movieSearchTab)
-        self.showMovieButton.setGeometry(QtCore.QRect(760, 540, 181, 61))
+        self.showDiscordMovieButton = QtWidgets.QPushButton(self.movieSearchTab)
+        self.showDiscordMovieButton.setGeometry(QtCore.QRect(570, 540, 181, 61))
         font = QtGui.QFont()
         font.setPointSize(10)
-        self.showMovieButton.setFont(font)
-        self.showMovieButton.setObjectName("showMovieButton")
+        self.showDiscordMovieButton.setFont(font)
+        self.showDiscordMovieButton.setObjectName("showDiscordMovieButton")
+        
+        self.movieNameListButton = QtWidgets.QPushButton(self.movieSearchTab)
+        self.movieNameListButton.setGeometry(QtCore.QRect(10, 540, 181, 61))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.movieNameListButton.setFont(font)
+        self.movieNameListButton.setObjectName("movieNameListButton")
+        
+        self.saveDiscordMovieListButton = QtWidgets.QPushButton(self.movieSearchTab)
+        self.saveDiscordMovieListButton.setGeometry(QtCore.QRect(770, 540, 181, 61))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.saveDiscordMovieListButton.setFont(font)
+        self.saveDiscordMovieListButton.setObjectName("saveDiscordMovieListButton")
+        
+        self.searchNextMovieButton = QtWidgets.QPushButton(self.movieSearchTab)
+        self.searchNextMovieButton.setGeometry(QtCore.QRect(200, 540, 181, 61))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.searchNextMovieButton.setFont(font)
+        self.searchNextMovieButton.setObjectName("searchNextMovieButton")
+        
         self.tabWidget.addTab(self.movieSearchTab, "")
         self.optionsButton = QtWidgets.QPushButton(self.centralwidget)
         self.optionsButton.setGeometry(QtCore.QRect(940, 10, 31, 21))
@@ -108,7 +129,10 @@ class UiMainWindow(QMainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "Entertainment Planner"))
         self.searchMovieButton.setText(_translate("MainWindow", "Search Movie"))
         self.label.setText(_translate("MainWindow", "Select A Movie:"))
-        self.showMovieButton.setText(_translate("MainWindow", "Show Movie List"))
+        self.showDiscordMovieButton.setText(_translate("MainWindow", "Show Discord Movie List"))
+        self.movieNameListButton.setText(_translate("MainWindow", "Movie Name List"))
+        self.saveDiscordMovieListButton.setText(_translate("MainWindow", "Save Discord Movie List"))
+        self.searchNextMovieButton.setText(_translate("MainWindow", "Search Next Movie"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.movieSearchTab), _translate("MainWindow", "Movie Search"))
 
     def set_ui_main_window(self, ui_main_window):
@@ -116,7 +140,9 @@ class UiMainWindow(QMainWindow):
 
     def connect_buttons_manually(self):
         self.searchMovieButton.clicked.connect(self.populate_with_movie_list)
-        self.showMovieButton.clicked.connect(self.show_discord_movie_list_window)
+        self.showDiscordMovieButton.clicked.connect(self.show_discord_movie_list_window)
+        self.movieNameListButton.clicked.connect(self.show_movie_name_list_window)
+        self.searchNextMovieButton.clicked.connect(self.search_next_movie)
         self.optionsButton.clicked.connect(self.show_options_window)
 
     def get_movie_by_name(self):
@@ -124,13 +150,18 @@ class UiMainWindow(QMainWindow):
         movie_name = self.movieNamePlainTextEdit.toPlainText().strip()
         request_url = 'https://www.omdbapi.com/?apikey=' + api_Key + '&type=movie&s=' + movie_name
         return requests.get(request_url).json()
-            
 
     def get_movie_by_imdb_id(self, imdb_id):
         api_Key = self.settings.value('api_key')
         request_url = 'https://www.omdbapi.com/?apikey=' + api_Key + '&type=movie&i=' + imdb_id
         omdb_api_request = requests.get(request_url).json()
         return omdb_api_request
+    
+    def add_movie_to_list(self, movie):
+        self.movie_list.append(movie)
+        
+    def set_movie_names_list(self, movie_names_list):
+        self.movie_names_list = movie_names_list
     
     def clear_layout(self):
         if self.horizontalLayout is not None:
@@ -170,6 +201,11 @@ class UiMainWindow(QMainWindow):
             testLabel.mousePressEvent = functools.partial(self.show_movie_window, imdb_id=movie['imdbID'])
             self.horizontalLayout.addWidget(testLabel)
     
+    def search_next_movie(self):
+        movie_name = self.movie_names_list.pop(0)
+        self.movieNamePlainTextEdit.setPlainText(movie_name.strip())
+        self.searchMovieButton.click()
+    
     def show_movie_window(self, event, imdb_id):
         movie = self.get_movie_by_imdb_id(imdb_id)
 
@@ -180,9 +216,6 @@ class UiMainWindow(QMainWindow):
         self.movie_window_ui.setupUi(self.movie_window)
         self.movie_window_ui.populateMovieDetails()
         self.movie_window.show()
-
-    def add_movie_to_list(self, movie):
-        self.movie_list.append(movie)
         
     def show_discord_movie_list_window(self):
         self.discord_movie_list_window = QtWidgets.QWidget()
@@ -192,10 +225,20 @@ class UiMainWindow(QMainWindow):
         self.discord_movie_list_window_ui.populateMovieList()
         self.discord_movie_list_window.show()
         
+    def show_movie_name_list_window(self):
+        self.movie_name_list_window = QtWidgets.QWidget()
+        self.movie_name_list_window_ui = Ui_MovieNameListForm()
+        self.movie_name_list_window_ui.setupUi(self.movie_name_list_window)
+        self.movie_name_list_window_ui.set_main_window(self.ui_main_window)
+        self.movie_name_list_window_ui.set_movie_names_list(self.movie_names_list)
+        self.movie_name_list_window_ui.load_list_view_with_movie_names()
+        self.movie_name_list_window.show()
+        
     def show_options_window(self):
         self.options_window = QtWidgets.QWidget()
         self.options_window_ui = Ui_OptionsForm()
         self.options_window_ui.setupUi(self.options_window)
+        self.options_window_ui.set_main_window(self.ui_main_window)
         self.options_window.show()
 
 if __name__ == "__main__":
