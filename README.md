@@ -44,4 +44,3 @@ pyuic5 -x .\MainWindow.ui -o .\Converted_MainWindow.py
 - [ ] Add a way to export the discord movie list. 
 - [ ] Add the ability to save the movies into different formats.
 - [ ] Add TV-Series/Anime search options.
-
