@@ -32,10 +32,10 @@ class Ui_DiscordMovieListWindow(QWidget):
         _translate = QtCore.QCoreApplication.translate
         DiscordMovieListForm.setWindowTitle(_translate("DiscordMovieListForm", "Discord Movie List"))
         
-    def setMovieList(self, movieList):
+    def set_movie_list(self, movieList):
         self.movieList = movieList
         
-    def populateMovieList(self):
+    def populate_movie_list(self):
         for movie in self.movieList:
             self.plainTextEdit = QtWidgets.QPlainTextEdit(self.scrollAreaWidgetContents)
             self.plainTextEdit.setMinimumSize(QtCore.QSize(641, 121))

@@ -443,13 +443,13 @@ class Ui_MovieWindow(QWidget):
         self.genreLabelLabel.setText(_translate("MovieForm", "Genre:"))
         self.saveMovieButton.setText(_translate("MovieForm", "Save Movie To List"))
                 
-    def setUiMainWindow(self, ui_main_window):
+    def set_ui_main_window(self, ui_main_window):
         self.ui_main_window = ui_main_window
         
-    def setMovie(self, movie):
+    def set_movie(self, movie):
         self.movie = movie
 
-    def populateMovieDetails(self):        
+    def populate_movie_details(self):        
         image = QImage()
         image.loadFromData(requests.get(self.movie['Poster']).content)
 

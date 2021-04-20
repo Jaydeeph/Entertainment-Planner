@@ -221,18 +221,18 @@ class UiMainWindow(QMainWindow):
 
         self.movie_window = QtWidgets.QWidget()
         self.movie_window_ui = Ui_MovieWindow()
-        self.movie_window_ui.setUiMainWindow(self.ui_main_window)
-        self.movie_window_ui.setMovie(movie)
+        self.movie_window_ui.set_ui_main_window(self.ui_main_window)
+        self.movie_window_ui.set_movie(movie)
         self.movie_window_ui.setupUi(self.movie_window)
-        self.movie_window_ui.populateMovieDetails()
+        self.movie_window_ui.populate_movie_details()
         self.movie_window.show()
         
     def show_discord_movie_list_window(self):
         self.discord_movie_list_window = QtWidgets.QWidget()
         self.discord_movie_list_window_ui = Ui_DiscordMovieListWindow()
         self.discord_movie_list_window_ui.setupUi(self.discord_movie_list_window)
-        self.discord_movie_list_window_ui.setMovieList(self.movie_list)
-        self.discord_movie_list_window_ui.populateMovieList()
+        self.discord_movie_list_window_ui.set_movie_list(self.movie_list)
+        self.discord_movie_list_window_ui.populate_movie_list()
         self.discord_movie_list_window.show()
         
     def show_movie_name_list_window(self):
