@@ -57,7 +57,7 @@ class Ui_MovieNameListForm(QWidget):
         
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        movie_name_file_path, _ = QFileDialog.getOpenFileName(self,"QFileDialog.getOpenFileName()", "","All Files (*);;Text Files (*.txt)", options=options)
+        movie_name_file_path, _ = QFileDialog.getOpenFileName(self,'QFileDialog.getOpenFileName()', '','All Files (*);Text Files (*.txt)')
         if movie_name_file_path:
             movie_name_file = open(movie_name_file_path, 'r')
             self.movie_names_list = movie_name_file.readlines()

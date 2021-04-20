@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QPushButton, QLabel, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QPushButton, QLabel, QVBoxLayout, QWidget, QFileDialog
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QSettings
 
@@ -144,6 +144,7 @@ class UiMainWindow(QMainWindow):
         self.movieNameListButton.clicked.connect(self.show_movie_name_list_window)
         self.searchNextMovieButton.clicked.connect(self.search_next_movie)
         self.optionsButton.clicked.connect(self.show_options_window)
+        self.saveDiscordMovieListButton.clicked.connect(self.save_discord_movie_list)
 
     def get_movie_by_name(self):
         api_Key = self.settings.value('api_key')
@@ -205,6 +206,15 @@ class UiMainWindow(QMainWindow):
         movie_name = self.movie_names_list.pop(0)
         self.movieNamePlainTextEdit.setPlainText(movie_name.strip())
         self.searchMovieButton.click()
+        
+    def save_discord_movie_list(self):
+        movie_name_file_path = QFileDialog.getSaveFileName(self,'QFileDialog.getSaveFileName()', '','All Files (*);Text Files (*.txt)')
+        file = open(movie_name_file_path[0],'w+', encoding="utf-8")
+        for movie in self.movie_list:
+            file.write(str(movie))
+            file.write(str('\n'))
+            file.write(str('\n'))
+        file.close()
     
     def show_movie_window(self, event, imdb_id):
         movie = self.get_movie_by_imdb_id(imdb_id)
