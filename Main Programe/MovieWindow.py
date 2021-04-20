@@ -412,6 +412,15 @@ class Ui_MovieWindow(QWidget):
         self.saveMovieButton.setFont(font)
         self.saveMovieButton.setFlat(False)
         self.saveMovieButton.setObjectName("saveMovieButton")
+        self.movieAddedConfirmationLabel = QtWidgets.QLabel(MovieForm)
+        self.movieAddedConfirmationLabel.setGeometry(QtCore.QRect(20, 475, 411, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.movieAddedConfirmationLabel.setFont(font)
+        self.movieAddedConfirmationLabel.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.movieAddedConfirmationLabel.setObjectName("movieAddedConfirmationLabel")
 
         self.retranslateUi(MovieForm)
         QtCore.QMetaObject.connectSlotsByName(MovieForm)
@@ -471,18 +480,17 @@ class Ui_MovieWindow(QWidget):
         self.directorLabel.setText(self.movie['Director'])
         self.boxOfficeLabel.setText(self.movie['BoxOffice'])
         self.productionLabel.setText(self.movie['Production'])
-        
         # self.CopyDiscordButton.clicked.connect(functools.partial(self.copy_discord_version_to_clipboard, movie=self.movie))
 
     def save_movie_to_list(self):
+        movie_name = self.movie['Title']
         discord_movie = self.get_discord_version_of_movie(self.movie)
-        self.ui_main_window.add_movie_to_list(discord_movie)
-    
+        self.ui_main_window.add_movie_to_list(movie_name, discord_movie)
+        self.movieAddedConfirmationLabel.setText('Status: <font color="green">Movie Add To List</font>')
 
     def copy_discord_version_to_clipboard(self):
         discord_movie = self.get_discord_version_of_movie(self.movie)
         pyperclip.copy(discord_movie)
-        
         
     def get_discord_version_of_movie(self, movie):
         return 'https://www.imdb.com/title/{ImdbId}\n' \

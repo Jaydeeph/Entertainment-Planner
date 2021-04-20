@@ -20,10 +20,13 @@ class UiMainWindow(QMainWindow):
     def setupUi(self, MainWindow):
         self.settings = QSettings('JayInc', 'Entertainment Planner')
         self.movie_names_list = []
+        self.saved_movie_list = []
         self.movie_list = []
         
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(990, 670)
+        MainWindow.setMinimumSize(QtCore.QSize(990, 670))
+        MainWindow.setMaximumSize(QtCore.QSize(990, 670))
         MainWindow.setMouseTracking(False)
         
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -158,8 +161,18 @@ class UiMainWindow(QMainWindow):
         omdb_api_request = requests.get(request_url).json()
         return omdb_api_request
     
-    def add_movie_to_list(self, movie):
-        self.movie_list.append(movie)
+    def add_movie_to_list(self, movie_name, movie):
+        if movie_name in self.saved_movie_list:
+            message_box = QMessageBox()
+            message_box.setWindowTitle('Adding Movie To List')
+            message_box.setText('Error: Can\'t add movie to list.')
+            message_box.setInformativeText('The movie you selected is already in the list.')
+            message_box.setIcon(QMessageBox.Warning)
+            message_box.setStandardButtons(QMessageBox.Ok)
+            message_box.exec_()
+        else:
+            self.saved_movie_list.append(movie_name)
+            self.movie_list.append(movie)
         
     def set_movie_names_list(self, movie_names_list):
         self.movie_names_list = movie_names_list

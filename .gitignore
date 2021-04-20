@@ -1,3 +1,4 @@
 /Converted Files/*
 */__pycache__/*
 /.vscode/*
+*.ps1*

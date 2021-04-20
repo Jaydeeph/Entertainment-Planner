@@ -966,6 +966,29 @@
     <bool>false</bool>
    </property>
   </widget>
+  <widget class="QLabel" name="MovieAddedConfirmationLabel">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>475</y>
+     <width>411</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Movie Status:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
