@@ -37,6 +37,12 @@ Example:
 pyuic5 -x .\MainWindow.ui -o .\Converted_MainWindow.py
 ```
 
+### Convert .py to .exe
+```
+pip install auto-py-to-exe
+```
+Then run 'auto-py-to-exe' in console to open the GUI. 
+
 ## To Do:
 - [x] Add options window to save personal API key. 
 - [x] Add a Window to see all discord movie list.

@@ -149,7 +149,7 @@ class Ui_OptionsForm(QWidget):
         "\n"
         "OR\n"
         "\n"
-        "The movies name is {Title} and it runs for {Runtime} long. The rating is amazing at {Rating} stars in IMDB."))
+        "The movies name is {Title} and it runs for {Runtime} long. The rating is amazing at {imdbRating} stars in IMDB."))
         self.checkJsonListButton.setText(_translate("OptionsForm", "JSON Keys"))
         self.clearOptionsButton.setText(_translate("OptionsForm", "Clear Options"))
         
