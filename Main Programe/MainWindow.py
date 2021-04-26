@@ -193,17 +193,29 @@ class UiMainWindow(QMainWindow):
         
         temp_movie_list = self.get_movie_by_name()
         
-        if 'Search' not in temp_movie_list:
+        if 'Search' in temp_movie_list:
+            temp_movie_list = temp_movie_list['Search']
+        elif 'Error' in temp_movie_list:
+            error_message = temp_movie_list['Error']
             message_box = QMessageBox()
             message_box.setWindowTitle('Searching For Movie')
-            message_box.setText('Error: Couldn\'t find the movie')
-            message_box.setInformativeText('Try again with another name.')
+            message_box.setText(error_message)
             message_box.setIcon(QMessageBox.Warning)
             message_box.setStandardButtons(QMessageBox.Ok)
+            message_box.setStyleSheet("QLabel{min-width:400px}")           
+            if (error_message == 'No API key provided.'):
+                message_box.setInformativeText('Please add the API key in options.')
+            if (error_message == 'Movie not found!'):
+                message_box.setInformativeText('Please search for another movie or try a removing special characters.')
             message_box.exec_()
             return
         else:
-            temp_movie_list = temp_movie_list['Search']
+            message_box = QMessageBox()
+            message_box.setWindowTitle('Searching For Movie')
+            message_box.setText('Error: Something went wrong. Please try again.')
+            message_box.setIcon(QMessageBox.Warning)
+            message_box.setStandardButtons(QMessageBox.Ok)
+            message_box.exec_()
 
         for movie in temp_movie_list:
             image = QImage()

@@ -50,6 +50,7 @@ class Ui_OptionsForm(QWidget):
             "Production":"Columbia Pictures, Castle Rock Entertainment",
             "Website":"N/A"
         }
+        self.options_form = OptionsForm
         OptionsForm.setObjectName("OptionsForm")
         OptionsForm.resize(580, 491)
         OptionsForm.setMinimumSize(QtCore.QSize(580, 491))
@@ -81,7 +82,7 @@ class Ui_OptionsForm(QWidget):
         self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line.setObjectName("line")
         self.saveButton = QtWidgets.QPushButton(OptionsForm)
-        self.saveButton.setGeometry(QtCore.QRect(10, 460, 561, 23))
+        self.saveButton.setGeometry(QtCore.QRect(290, 460, 281, 23))
         self.saveButton.setObjectName("saveButton")
         self.autoSaveCheckBox = QtWidgets.QCheckBox(OptionsForm)
         self.autoSaveCheckBox.setGeometry(QtCore.QRect(10, 50, 371, 17))
@@ -111,6 +112,9 @@ class Ui_OptionsForm(QWidget):
         self.customFormatResultsPlainTextEdit.setGeometry(QtCore.QRect(10, 300, 561, 141))
         self.customFormatResultsPlainTextEdit.setPlainText("")
         self.customFormatResultsPlainTextEdit.setObjectName("customFormatResultsPlainTextEdit")
+        self.clearOptionsButton = QtWidgets.QPushButton(OptionsForm)
+        self.clearOptionsButton.setGeometry(QtCore.QRect(10, 460, 271, 23))
+        self.clearOptionsButton.setObjectName("clearOptionsButton")
 
         self.retranslateUi(OptionsForm)
         QtCore.QMetaObject.connectSlotsByName(OptionsForm)
@@ -121,12 +125,16 @@ class Ui_OptionsForm(QWidget):
     def retranslateUi(self, OptionsForm):
         _translate = QtCore.QCoreApplication.translate
         OptionsForm.setWindowTitle(_translate("OptionsForm", "Options"))
+        self.apiLineEdit.setText(_translate("OptionsForm", ""))
         self.label.setText(_translate("OptionsForm", "OmdbApi:"))
         self.validateApiButton.setText(_translate("OptionsForm", "Validate API"))
         self.saveButton.setText(_translate("OptionsForm", "Save"))
         self.autoSaveCheckBox.setText(_translate("OptionsForm", "Auto save movie to file when \"Save Movie To List\" is clicked."))
+        self.autoSaveCheckBox.setChecked(False)
         self.autoCloseCheckBox.setText(_translate("OptionsForm", "Auto close movie window when movie is saved."))
+        self.autoCloseCheckBox.setChecked(False)
         self.customMovieFormatCheckBox.setText(_translate("OptionsForm", "Use custom format for movie save."))
+        self.customMovieFormatCheckBox.setChecked(False)
         self.customFormatPlainTextEdit.setPlainText(_translate("OptionsForm", "For Example:\n"
         "\n"
         "\'[ {Title} | ⌚ {Runtime} | ⭐ {Genre} | 📅 {Released} | {Rated} ]\n"
@@ -143,11 +151,13 @@ class Ui_OptionsForm(QWidget):
         "\n"
         "The movies name is {Title} and it runs for {Runtime} long. The rating is amazing at {Rating} stars in IMDB."))
         self.checkJsonListButton.setText(_translate("OptionsForm", "JSON Keys"))
+        self.clearOptionsButton.setText(_translate("OptionsForm", "Clear Options"))
         
     def connect_buttons_manually(self):
         self.validateApiButton.clicked.connect(self.validate_api_button_click)
         self.saveButton.clicked.connect(self.save_options)
         self.checkJsonListButton.clicked.connect(self.available_json_list)
+        self.clearOptionsButton.clicked.connect(self.clear_options)
         self.customFormatPlainTextEdit.textChanged.connect(self.show_format_text)
         self.customMovieFormatCheckBox.stateChanged.connect(self.custom_movie_format_checkbox)
 
@@ -187,11 +197,16 @@ class Ui_OptionsForm(QWidget):
             pass
     
     def load_options(self):
-        self.apiLineEdit.setText(self.settings.value('api_key'))
-        self.autoSaveCheckBox.setChecked(self.value_to_bool(self.settings.value('auto_save_check_box')))
-        self.autoCloseCheckBox.setChecked(self.value_to_bool(self.settings.value('auto_close_check_box')))
-        self.customMovieFormatCheckBox.setChecked(self.value_to_bool(self.settings.value('custom_format_check_box')))
-        self.customFormatPlainTextEdit.setPlainText(self.settings.value('custom_format_text'))
+        if (self.settings.value('api_key')):
+            self.apiLineEdit.setText(self.settings.value('api_key'))
+        if (self.settings.value('auto_save_check_box')):
+            self.autoSaveCheckBox.setChecked(self.value_to_bool(self.settings.value('auto_save_check_box')))
+        if (self.settings.value('auto_close_check_box')):
+            self.autoCloseCheckBox.setChecked(self.value_to_bool(self.settings.value('auto_close_check_box')))
+        if (self.settings.value('custom_format_check_box')):
+            self.customMovieFormatCheckBox.setChecked(self.value_to_bool(self.settings.value('custom_format_check_box')))
+        if (self.settings.value('custom_format_text')):    
+            self.customFormatPlainTextEdit.setPlainText(self.settings.value('custom_format_text'))
     
     def save_options(self):
         self.settings.setValue('api_key', self.apiLineEdit.text().strip())
@@ -206,6 +221,10 @@ class Ui_OptionsForm(QWidget):
         message_box.setIcon(QMessageBox.Information)
         message_box.setStandardButtons(QMessageBox.Ok)
         message_box.exec_()
+        
+    def clear_options(self):
+        self.settings.clear()
+        self.retranslateUi(self.options_form)
         
     def value_to_bool(self, value):
         return value.lower() == 'true' if isinstance(value, str) else bool(value)
