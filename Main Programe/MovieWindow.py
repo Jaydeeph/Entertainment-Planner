@@ -1,7 +1,10 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget
 from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtCore import QSettings
 import requests, pyperclip, functools
+import os
+import re
 
 class Ui_MovieWindow(QWidget):
 
@@ -9,6 +12,8 @@ class Ui_MovieWindow(QWidget):
         super().__init__()
         
     def setupUi(self, MovieForm):
+        self.settings = QSettings('JayInc', 'Entertainment Planner')
+        
         MovieForm.setObjectName("MovieForm")
         MovieForm.resize(881, 520)
         self.ratedLabelLabel = QtWidgets.QLabel(MovieForm)
@@ -247,6 +252,7 @@ class Ui_MovieWindow(QWidget):
         self.imdbIdLabel.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
         self.imdbIdLabel.setWordWrap(True)
         self.imdbIdLabel.setObjectName("imdbIdLabel")
+        self.imdbIdLabel.setOpenExternalLinks(True)
         self.copyDiscordButton = QtWidgets.QPushButton(MovieForm)
         self.copyDiscordButton.setGeometry(QtCore.QRect(660, 460, 211, 51))
         font = QtGui.QFont()
@@ -425,7 +431,7 @@ class Ui_MovieWindow(QWidget):
         self.retranslateUi(MovieForm)
         QtCore.QMetaObject.connectSlotsByName(MovieForm)
         
-        self.copyDiscordButton.clicked.connect(self.copy_discord_version_to_clipboard)
+        self.copyDiscordButton.clicked.connect(self.copy_format_to_clipboard)
         self.saveMovieButton.clicked.connect(self.save_movie_to_list)
 
 
@@ -451,7 +457,10 @@ class Ui_MovieWindow(QWidget):
         self.awardsLabelLabel.setText(_translate("MovieForm", "Awards:"))
         self.genreLabelLabel.setText(_translate("MovieForm", "Genre:"))
         self.saveMovieButton.setText(_translate("MovieForm", "Save Movie To List"))
-                
+    
+    def set_movie_window(self, movie_window):
+        self.movie_window = movie_window
+        
     def set_ui_main_window(self, ui_main_window):
         self.ui_main_window = ui_main_window
         
@@ -464,7 +473,7 @@ class Ui_MovieWindow(QWidget):
 
         self.posterImage.setPixmap(QPixmap(image))
         self.titleLabel.setText(self.movie['Title'])
-        self.imdbIdLabel.setText(self.movie['imdbID'])
+        self.imdbIdLabel.setText('<a href="https://www.imdb.com/title/'+ self.movie['imdbID'] + '">' + self.movie['imdbID'] + '</a>')
         self.actorsLabel.setText(self.movie['Actors'])
         self.plotLabel.setText(self.movie['Plot'])
         self.runtimeLabel.setText(self.movie['Runtime'])
@@ -483,25 +492,32 @@ class Ui_MovieWindow(QWidget):
         # self.CopyDiscordButton.clicked.connect(functools.partial(self.copy_discord_version_to_clipboard, movie=self.movie))
 
     def save_movie_to_list(self):
+        auto_save = self.settings.value('auto_save_check_box')
+        auto_close = self.settings.value('auto_close_check_box')
         movie_name = self.movie['Title']
-        discord_movie = self.get_discord_version_of_movie(self.movie)
-        self.ui_main_window.add_movie_to_list(movie_name, discord_movie)
-        self.movieAddedConfirmationLabel.setText('Status: <font color="green">Movie Add To List</font>')
+        format_movie = self.get_format_of_movie(self.movie)
+        added_to_list = self.ui_main_window.add_movie_to_list(movie_name, format_movie)
+        if added_to_list:
+            self.movieAddedConfirmationLabel.setText('Status: <font color="green">Movie Add To List</font>')
+            if auto_save:
+                current_path = os.getcwd()
+                file = open(current_path + '\movie_list_output.txt','a', encoding="utf-8")
+                file.write(str(format_movie))
+                file.write(str('\n'))
+                file.close()
+            if auto_close:
+                self.movie_window.close()
 
-    def copy_discord_version_to_clipboard(self):
-        discord_movie = self.get_discord_version_of_movie(self.movie)
-        pyperclip.copy(discord_movie)
+    def copy_format_to_clipboard(self):
+        format_movie = self.get_format_of_movie(self.movie)
+        pyperclip.copy(format_movie)
         
-    def get_discord_version_of_movie(self, movie):
-        return 'https://www.imdb.com/title/{ImdbId}\n' \
-                'https://www.imdb.com/title/{ImdbId}/parentalguide\n' \
-                '```css\n' \
-                '[ {Title} | ⌚ {Runtime} | ⭐ {ImdbRating} | 📅 {Released} | {Rated} ]\n' \
-                '\'{Plot}\'\n' \
-                '```'.format(ImdbId=movie['imdbID'],
-                             Title=movie['Title'], 
-                             Runtime=movie['Runtime'], 
-                             ImdbRating=movie['Ratings'][0]['Value'],
-                             Released=movie['Released'],
-                             Rated=movie['Rated'],
-                             Plot=movie['Plot'])
+    def get_format_of_movie(self, movie):
+        custom_format_text = self.settings.value('custom_format_text')
+        tokens = re.split(r'\{(.*?)\}', custom_format_text)
+        keywords = tokens[1::2]
+        try:
+            values = {k:self.movie.get(k, '') for k in keywords}
+            return custom_format_text.format(**values)
+        except (ValueError):
+            pass

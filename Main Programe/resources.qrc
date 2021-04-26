@@ -1,0 +1,6 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="icons">
+        <file alias="options.png">./Resources/icons8-settings-100.png</file>
+    </qresource>
+</RCC>

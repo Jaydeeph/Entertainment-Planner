@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QPushButton, QLabel, QVBoxLayout, QWidget, QFileDialog
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QSettings
+import resources
 
 from MovieWindow import Ui_MovieWindow
 from DiscordMovieListWindow import Ui_DiscordMovieListWindow
@@ -114,7 +115,7 @@ class UiMainWindow(QMainWindow):
         self.optionsButton.setGeometry(QtCore.QRect(940, 10, 31, 21))
         self.optionsButton.setText("")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("C:/Users/Jayu/Downloads/icons8-settings-100.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icons/options.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.optionsButton.setIcon(icon)
         self.optionsButton.setObjectName("optionsButton")
         MainWindow.setCentralWidget(self.centralwidget)
@@ -170,9 +171,11 @@ class UiMainWindow(QMainWindow):
             message_box.setIcon(QMessageBox.Warning)
             message_box.setStandardButtons(QMessageBox.Ok)
             message_box.exec_()
+            return False
         else:
             self.saved_movie_list.append(movie_name)
             self.movie_list.append(movie)
+            return True
         
     def set_movie_names_list(self, movie_names_list):
         self.movie_names_list = movie_names_list
@@ -216,24 +219,35 @@ class UiMainWindow(QMainWindow):
             self.horizontalLayout.addWidget(testLabel)
     
     def search_next_movie(self):
-        movie_name = self.movie_names_list.pop(0)
-        self.movieNamePlainTextEdit.setPlainText(movie_name.strip())
-        self.searchMovieButton.click()
+        if (self.movie_names_list):
+            movie_name = self.movie_names_list.pop(0)
+            self.movieNamePlainTextEdit.setPlainText(movie_name.strip())
+            self.searchMovieButton.click()
+        else:
+            message_box = QMessageBox()
+            message_box.setWindowTitle('Next Movie')
+            message_box.setText('Error: No more movie in the list.')
+            message_box.setInformativeText('Try adding another list or search manually.')
+            message_box.setIcon(QMessageBox.Warning)
+            message_box.setStandardButtons(QMessageBox.Ok)
+            message_box.exec_()
         
     def save_discord_movie_list(self):
         movie_name_file_path = QFileDialog.getSaveFileName(self,'QFileDialog.getSaveFileName()', '','All Files (*);Text Files (*.txt)')
-        file = open(movie_name_file_path[0],'w+', encoding="utf-8")
-        for movie in self.movie_list:
-            file.write(str(movie))
-            file.write(str('\n'))
-            file.write(str('\n'))
-        file.close()
+        if (not movie_name_file_path[0] == ''):
+            file = open(movie_name_file_path[0],'w+', encoding="utf-8")
+            for movie in self.movie_list:
+                file.write(str(movie))
+                file.write(str('\n'))
+                file.write(str('\n'))
+            file.close()
     
     def show_movie_window(self, event, imdb_id):
         movie = self.get_movie_by_imdb_id(imdb_id)
 
         self.movie_window = QtWidgets.QWidget()
         self.movie_window_ui = Ui_MovieWindow()
+        self.movie_window_ui.set_movie_window(self.movie_window)
         self.movie_window_ui.set_ui_main_window(self.ui_main_window)
         self.movie_window_ui.set_movie(movie)
         self.movie_window_ui.setupUi(self.movie_window)
@@ -261,7 +275,7 @@ class UiMainWindow(QMainWindow):
         self.options_window = QtWidgets.QWidget()
         self.options_window_ui = Ui_OptionsForm()
         self.options_window_ui.setupUi(self.options_window)
-        self.options_window_ui.set_main_window(self.ui_main_window)
+        self.options_window_ui.custom_movie_format_checkbox()
         self.options_window.show()
 
 if __name__ == "__main__":

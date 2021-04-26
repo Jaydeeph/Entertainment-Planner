@@ -42,5 +42,10 @@ pyuic5 -x .\MainWindow.ui -o .\Converted_MainWindow.py
 - [x] Add a Window to see all discord movie list.
 - [x] Add a list of movies and search movies by that.
 - [x] Add a way to export the discord movie list. 
-- [ ] Add the ability to save the movies into different formats.
+- [x] Add the ability to save the movies into different formats.
 - [ ] Add TV-Series/Anime search options.
+
+## Credits:
+To those that have helped me when I ran into a wall, thank you.
+
+https://stackoverflow.com/users/2001654/musicamante
