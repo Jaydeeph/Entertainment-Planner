@@ -42,6 +42,7 @@ pyuic5 -x .\MainWindow.ui -o .\Converted_MainWindow.py
 pip install auto-py-to-exe
 ```
 Then run 'auto-py-to-exe' in console to open the GUI. 
+https://github.com/brentvollebregt/auto-py-to-exe
 
 ## To Do:
 - [x] Add options window to save personal API key. 

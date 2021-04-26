@@ -205,7 +205,7 @@ class Ui_OptionsForm(QWidget):
             self.autoCloseCheckBox.setChecked(self.value_to_bool(self.settings.value('auto_close_check_box')))
         if (self.settings.value('custom_format_check_box')):
             self.customMovieFormatCheckBox.setChecked(self.value_to_bool(self.settings.value('custom_format_check_box')))
-        if (self.settings.value('custom_format_text')):    
+        if (self.settings.value('custom_format_text')):
             self.customFormatPlainTextEdit.setPlainText(self.settings.value('custom_format_text'))
     
     def save_options(self):
